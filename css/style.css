@@ -1,0 +1,61 @@
+body {
+    background-color: #fcfcfc;
+}
+
+.hero-section {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/backroud_bar.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: scroll; 
+    position: relative;
+    padding: 100px 0 !important; 
+}
+.hero-section h1 {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    letter-spacing: 1px;
+}
+.hero-section p {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+.card-img-top {
+    height: 300px; 
+    object-fit: contain; 
+    padding: 20px;
+    background-color: #ffffff;
+}
+.product-card {
+    transition: transform 0.3s ease;
+}
+.product-card, .card {
+    background-color: #ffffff;
+}
+.product-card:hover {
+    transform: translateY(-8px); /* efek: sedikit 'melayang' pas kursor ngelewat */
+}
+.form-control:focus {
+    box-shadow: none;
+    border-color: #0d6efd;
+}
+section {
+    scroll-margin-top: 80px;
+}
+
+/* warna teks di dalam field: abu terang biar enak dilihat */
+.form-control,
+.form-select,
+textarea {
+    color: #6c757d; 
+}
+
+/* placeholder: sedikit lebih terang supaya beda dari isi */
+.form-control::placeholder,
+textarea::placeholder {
+    color: #adb5bd;
+    opacity: 1;
+}
+
+.form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}

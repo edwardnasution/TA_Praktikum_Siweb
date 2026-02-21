@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadStock | Warehouse Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#"><i class="bi bi-intersect me-2"></i>THREADSTOCK</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#">Inventory</a>
+                <a class="nav-link" href="#form-input">Add Stock</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center py-5 mb-5">
+        <div class="hero-overlay">
+            <div class="container py-5">
+                <h1 class="display-5 fw-bold text-white">Stock Management System</h1>
+                <p class="lead text-light">Kelola database produk dan inventaris kaos dengan efisien.</p>
+            </div>
+        </div>
+    </header>
+
+    <section class="container mb-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-primary text-white p-3">
+                    <h6 class="opacity-75">Total Produk</h6>
+                    <h2 id="stat-total-produk" class="fw-bold">0 Pcs</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-warning p-3 text-dark">
+                    <h6 class="opacity-75">Stok</h6>
+                    <h2 id="stat-total-model" class="fw-bold">0 Model</h2>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm bg-dark text-white p-3">
+                    <h6 class="opacity-75">Kategori</h6>
+                    <h2 class="fw-bold">3 Jenis</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container mb-5">
+        <h3 class="fw-bold mb-4 border-start border-4 border-primary ps-3">Daftar Katalog Kaos</h3>
+
+        <div class="row g-4" id="product-list"></div>
+    </section>
+
+    <section id="form-input" class="container mb-5 py-5">
+        <div class="row">
+            <div class="col-lg-8 mb-4">
+                <div class="card border-0 shadow p-4 p-md-5">
+                    <h3 class="fw-bold mb-4 text-center">Registrasi Produk Baru</h3>
+                    <form id="product-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama Model</label>
+                                <input type="text" id="input-nama" class="form-control" placeholder="e.g. Noir Oversize" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Kategori</label>
+                                <select id="input-kategori" class="form-select">
+                                    <option>T-Shirt</option>
+                                    <option>Longsleeve</option>
+                                    <option>Hoodie</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Harga (IDR)</label>
+                                <input type="number" id="input-harga" class="form-control" placeholder="150000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Jumlah Stok</label>
+                                <input type="number" id="input-stok" class="form-control" placeholder="0" required>
+                            </div>
+                                               <div class="col-12">
+                                                   <label class="form-label fw-semibold">Nama File Foto (mis. .jpg/.png)</label>
+                                                   <input type="text" id="input-foto" class="form-control" placeholder="Contoh: kaos-hitam.jpg" required>
+                                                   <div class="form-text text-danger">*Pastikan file foto sudah diletakkan di folder assets/</div>
+                                               </div>
+                                               <div class="col-12">
+                                                   <label class="form-label fw-semibold">Deskripsi singkat</label>
+                                                   <textarea id="input-deskripsi" class="form-control" rows="3" placeholder="Tulis deskripsi singkat produk (bahan, fit, catatan)"></textarea>
+                                               </div>
+                                               <div class="col-md-6">
+                                                   <label class="form-label fw-semibold">Ukuran / Size</label>
+                                                   <input type="text" id="input-ukuran" class="form-control" placeholder="Contoh: S,M,L,XL">
+                                               </div>
+                                               <div class="col-md-6">
+                                                   <label class="form-label fw-semibold">Material</label>
+                                                   <input type="text" id="input-material" class="form-control" placeholder="Contoh: Katun 100%">
+                                               </div>
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">SIMPAN DATA</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card mb-4 p-3">
+                    <div class="d-flex flex-column gap-3 align-items-start">
+                        <div class="w-100">
+                            <label class="form-label fw-semibold">Tambah Kategori</label>
+                            <div class="d-flex gap-2">
+                                <input id="new-category-name" type="text" class="form-control" placeholder="Contoh: T-Shirt">
+                                <button id="add-category-btn" class="btn btn-primary">Tambah</button>
+                            </div>
+                        </div>
+                        <div class="text-muted small">Kategori disimpan di browser (localStorage).</div>
+                    </div>
+
+                    <div id="category-manager-list" class="mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white text-center py-4">
+        <p class="mb-0 small text-secondary">© 2026 THREADSTOCK SYSTEM | Built for Siweb Final Project</p>
+    </footer>
+
+    <!-- Modal detail produk (lihat seperti pelanggan; klik ikon pensil untuk edit) -->
+    <div class="modal fade" id="productDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productDetailTitle">Detail Produk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- view mode (default) - tampilkan seperti kartu produk seperti di tampilan pelanggan -->
+                    <div id="modal-view">
+                        <div class="card border-0">
+                            <div class="row g-0">
+                                <div class="col-md-5 text-center">
+                                    <img id="modal-image" src="" alt="foto" class="card-img-top p-3" style="max-height:360px;object-fit:contain;" onerror="this.src='https://via.placeholder.com/400x400?text=Foto+Tidak+Ada'">
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body">
+                                        <h5 id="view-nama" class="fw-bold"></h5>
+                                        <p id="view-harga" class="text-primary fw-bold mb-2"></p>
+                                        <p id="view-kategori" class="text-muted small mb-2"></p>
+                                        <p id="view-stok" class="text-muted small mb-2"></p>
+                                        <p id="view-deskripsi" class="mb-2 text-secondary"></p>
+                                        <p id="view-ukuran" class="mb-1 small text-secondary"></p>
+                                        <p id="view-material" class="mb-1 small text-secondary"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- edit mode (tersedia, tapi disembunyikan sampai klik pensil) -->
+                    <form id="modal-product-form" class="d-none">
+                        <div class="row g-3">
+                            <div class="col-md-5 text-center">
+                                <img id="modal-image-edit" src="" alt="foto" class="img-fluid mb-3" onerror="this.src='https://via.placeholder.com/400x400?text=Foto+Tidak+Ada'">
+                                <label class="form-label">Nama file foto</label>
+                                <input id="modal-foto" class="form-control" placeholder="kaos-hitam.jpg">
+                            </div>
+                            <div class="col-md-7">
+                                <label class="form-label">Nama model</label>
+                                <input id="modal-nama" class="form-control">
+
+                                <label class="form-label mt-2">Kategori</label>
+                                <select id="modal-kategori" class="form-select"></select>
+
+                                <div class="row g-2 mt-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Harga (IDR)</label>
+                                        <input id="modal-harga" type="number" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Stok</label>
+                                        <input id="modal-stok" type="number" class="form-control">
+                                    </div>
+                                </div>
+
+                                <label class="form-label mt-2">Deskripsi</label>
+                                <textarea id="modal-deskripsi" class="form-control" rows="3"></textarea>
+
+                                <div class="row g-2 mt-2">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Ukuran</label>
+                                        <input id="modal-ukuran" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Material</label>
+                                        <input id="modal-material" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" id="modal-save-btn" class="btn btn-primary d-none">Simpan Perubahan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Catatan: daftar kategori disimpan di localStorage (gak perlu server) */
+        const defaultCategories = ["T-Shirt","Longsleeve","Hoodie"];
+
+        function getCategories() {
+            const c = localStorage.getItem('categories');
+            return c ? JSON.parse(c) : [];
+        }
+
+        function saveCategories(arr) {
+            localStorage.setItem('categories', JSON.stringify(arr));
+        }
+
+        function ensureDefaultCategories() {
+            const cats = getCategories();
+            if (!cats || cats.length === 0) {
+                saveCategories(defaultCategories.slice());
+            }
+        }
+
+        /* Tampilkan daftar kategori (CRUD) — bisa tambah/ubah/hapus */
+        function renderCategoryManager() {
+            const list = document.getElementById('category-manager-list');
+            const cats = getCategories();
+            list.innerHTML = '';
+            if (!cats || cats.length === 0) {
+                list.innerHTML = '<div class="text-muted small">Belum ada kategori.</div>';
+                return;
+            }
+
+            cats.forEach((c, idx) => {
+                const el = document.createElement('div');
+                el.className = 'd-flex align-items-center gap-2 mb-2';
+                el.innerHTML = `
+                    <div class="flex-grow-1">${c}</div>
+                    <button class="btn btn-sm btn-outline-secondary" data-idx="${idx}" data-action="edit">Ubah</button>
+                    <button class="btn btn-sm btn-outline-danger" data-idx="${idx}" data-action="del">Hapus</button>
+                `;
+                list.appendChild(el);
+            });
+        }
+
+        function populateCategorySelect() {
+            const select = document.getElementById('input-kategori');
+            const cats = getCategories();
+            select.innerHTML = '';
+            cats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = c;
+                select.appendChild(opt);
+            });
+        }
+
+        /* Data produk juga disimpan di localStorage */
+        const productForm = document.getElementById('product-form');
+        const productList = document.getElementById('product-list');
+
+        function getProducts() {
+            const data = localStorage.getItem('products');
+            return data ? JSON.parse(data) : [];
+        }
+
+        function renderProducts() {
+            const products = getProducts();
+            productList.innerHTML = '';
+            let totalStok = 0;
+
+            products.forEach((p, index) => {
+                totalStok += parseInt(p.stok);
+                productList.innerHTML += `
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm border-0 product-card">
+                            <img src="assets/${p.foto}" class="card-img-top bg-light" alt="${p.nama}" onerror="this.src='https://via.placeholder.com/300x300?text=Foto+Tidak+Ada'">
+                            <div class="card-body">
+                                <h5 class="fw-bold">${p.nama}</h5>
+                                <p class="text-primary fw-bold mb-1">Rp ${parseInt(p.harga).toLocaleString('id-ID')}</p>
+                                <p class="text-muted small mb-3">Stok: ${p.stok} | ${p.kategori}</p>
+                                    <div class="d-flex gap-2">
+                                        <button onclick="showProductDetail(${index})" class="btn btn-outline-primary btn-sm w-100">Detail</button>
+                                        <button onclick="showProductEdit(${index})" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i></button>
+                                        <button onclick="deleteProduct(${index})" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('stat-total-produk').innerText = totalStok + " Pcs";
+            document.getElementById('stat-total-model').innerText = products.length + " Model";
+        }
+
+        /* Form: tambahkan produk baru */
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const products = getProducts();
+
+            const newProduct = {
+                nama: document.getElementById('input-nama').value,
+                kategori: document.getElementById('input-kategori').value,
+                harga: document.getElementById('input-harga').value,
+                stok: document.getElementById('input-stok').value,
+                foto: document.getElementById('input-foto').value,
+                deskripsi: document.getElementById('input-deskripsi').value,
+                ukuran: document.getElementById('input-ukuran').value,
+                material: document.getElementById('input-material').value
+            };
+
+            products.push(newProduct);
+            localStorage.setItem('products', JSON.stringify(products));
+            productForm.reset();
+            renderProducts();
+            alert("Data Berhasil Disimpan!");
+        });
+
+        function deleteProduct(index) {
+            if (confirm("Hapus produk ini?")) {
+                const products = getProducts();
+                products.splice(index, 1);
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        /* Tampilkan modal detail produk (lihat saja atau edit pakai pensil) */
+        function showProductDetail(index) {
+            const products = getProducts();
+            const p = products[index];
+            if (!p) return alert('Produk tidak ditemukan');
+
+            const modalEl = document.getElementById('productDetailModal');
+            modalEl.dataset.index = index; 
+
+            document.getElementById('view-nama').innerText = p.nama || '-';
+            document.getElementById('view-harga').innerText = p.harga ? ('Rp ' + parseInt(p.harga).toLocaleString('id-ID')) : '-';
+            document.getElementById('view-kategori').innerHTML = p.kategori ? ('<span class="badge bg-secondary">' + p.kategori + '</span>') : '';
+            document.getElementById('view-stok').innerText = p.stok ? ('Stok: ' + p.stok) : '';
+            document.getElementById('view-deskripsi').innerText = p.deskripsi || '';
+            document.getElementById('view-ukuran').innerText = p.ukuran ? ('Ukuran: ' + p.ukuran) : '';
+            document.getElementById('view-material').innerText = p.material ? ('Material: ' + p.material) : '';
+            document.getElementById('modal-image').src = 'assets/' + (p.foto || '');
+
+            document.getElementById('modal-view').classList.remove('d-none');
+            document.getElementById('modal-product-form').classList.add('d-none');
+            document.getElementById('modal-save-btn').classList.add('d-none');
+
+            const bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+        }
+
+        /* Simpan perubahan dari modal ke localStorage */
+        function saveProductDetail() {
+            const modalEl = document.getElementById('productDetailModal');
+            const idx = parseInt(modalEl.dataset.index, 10);
+            if (Number.isNaN(idx)) return alert('Index produk tidak valid');
+
+            const products = getProducts();
+            const p = products[idx];
+            if (!p) return alert('Produk tidak ditemukan');
+
+            p.nama = document.getElementById('modal-nama').value.trim();
+            p.foto = document.getElementById('modal-foto').value.trim();
+            p.kategori = document.getElementById('modal-kategori').value;
+            p.harga = document.getElementById('modal-harga').value;
+            p.stok = document.getElementById('modal-stok').value;
+            p.deskripsi = document.getElementById('modal-deskripsi').value.trim();
+            p.ukuran = document.getElementById('modal-ukuran').value.trim();
+            p.material = document.getElementById('modal-material').value.trim();
+
+            /* simpan dan refresh */
+            localStorage.setItem('products', JSON.stringify(products));
+            renderProducts();
+            const bsModal = bootstrap.Modal.getInstance(modalEl);
+            if (bsModal) bsModal.hide();
+            alert('Perubahan produk berhasil disimpan');
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target && e.target.id === 'modal-foto') {
+                const v = e.target.value.trim();
+                const img = document.getElementById('modal-image-edit') || document.getElementById('modal-image');
+                if (img) img.src = 'assets/' + (v || '');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'modal-save-btn') {
+                saveProductDetail();
+            }
+        });
+
+        function showProductEdit(index) {
+            const products = getProducts();
+            const p = products[index];
+            if (!p) return alert('Produk tidak ditemukan');
+
+            const modalEl = document.getElementById('productDetailModal');
+            modalEl.dataset.index = index;
+
+            // isi form edit
+            document.getElementById('modal-nama').value = p.nama || '';
+            document.getElementById('modal-foto').value = p.foto || '';
+            document.getElementById('modal-image-edit').src = 'assets/' + (p.foto || '');
+
+            const modalCat = document.getElementById('modal-kategori');
+            modalCat.innerHTML = '';
+            getCategories().forEach(c => {
+                const o = document.createElement('option');
+                o.value = c; o.innerText = c;
+                if (c === p.kategori) o.selected = true;
+                modalCat.appendChild(o);
+            });
+
+            document.getElementById('modal-harga').value = p.harga || '';
+            document.getElementById('modal-stok').value = p.stok || '';
+            document.getElementById('modal-deskripsi').value = p.deskripsi || '';
+            document.getElementById('modal-ukuran').value = p.ukuran || '';
+            document.getElementById('modal-material').value = p.material || '';
+
+            /* tampilkan form edit, sembunyikan view */
+            document.getElementById('modal-view').classList.add('d-none');
+            document.getElementById('modal-product-form').classList.remove('d-none');
+            document.getElementById('modal-save-btn').classList.remove('d-none');
+
+            const bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+        }
+
+        /* Fitur kategori: tambah / ubah / hapus */
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.id === 'add-category-btn') {
+                const name = document.getElementById('new-category-name').value.trim();
+                if (!name) return alert('Masukkan nama kategori');
+                const cats = getCategories();
+                if (cats.includes(name)) return alert('Kategori sudah ada');
+                cats.push(name);
+                saveCategories(cats);
+                document.getElementById('new-category-name').value = '';
+                populateCategorySelect();
+                renderCategoryManager();
+            }
+            if (target.dataset && target.dataset.action) {
+                const idx = parseInt(target.dataset.idx, 10);
+                const action = target.dataset.action;
+                const cats = getCategories();
+                if (action === 'del') {
+                    if (!confirm('Hapus kategori ini?')) return;
+                    cats.splice(idx, 1);
+                    saveCategories(cats);
+                    populateCategorySelect();
+                    renderCategoryManager();
+                } else if (action === 'edit') {
+                    const newName = prompt('Ubah nama kategori', cats[idx]);
+                    if (newName && newName.trim()) {
+                        cats[idx] = newName.trim();
+                        saveCategories(cats);
+                        populateCategorySelect();
+                        renderCategoryManager();
+                    }
+                }
+            }
+        });
+
+        /* Inisialisasi saat halaman dimuat: tampilkan data awal */
+        window.addEventListener('DOMContentLoaded', () => {
+            ensureDefaultCategories();
+            populateCategorySelect();
+            renderCategoryManager();
+            renderProducts();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
