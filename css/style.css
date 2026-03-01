@@ -1,61 +1,479 @@
 body {
-    background-color: #fcfcfc;
+    background-color: #f8f9fa;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #212529;
 }
 
+* {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1.3rem;
+    color: #111 !important;
+}
+
+.nav-link {
+    font-weight: 500;
+    position: relative;
+    color: #333 !important;
+}
+
+.nav-link:hover {
+    color: #0d6efd !important;
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0%;
+    height: 2px;
+    left: 0;
+    bottom: -5px;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+#wishlist-nav-btn,
+#dark-mode-toggle {
+    color: #333 !important;
+    border-color: #333 !important;
+}
+
+#wishlist-nav-btn:hover,
+#dark-mode-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* ===== HERO SECTION ===== */
 .hero-section {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/backroud_bar.jpg');
+    background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('../assets/backroud_bar.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: scroll; 
-    position: relative;
-    padding: 100px 0 !important; 
+    padding: 80px 0 !important;
 }
+
 .hero-section h1 {
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    letter-spacing: 1px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: white !important;
 }
+
 .hero-section p {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    color: white !important;
 }
-.card-img-top {
-    height: 300px; 
-    object-fit: contain; 
-    padding: 20px;
+
+.btn-add-new {
+    background: white;
+    color: black;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 40px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+.btn-add-new:hover {
+    background: #f0f0f0;
+    color: black;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.section-title i {
+    font-size: 1.8rem;
+    color: #000;
+}
+
+.section-title h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.section-desc {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* ===== STATISTICS CARDS ===== */
+.stat-card {
     background-color: #ffffff;
-}
-.product-card {
+    border-radius: 12px;
+    border: 1px solid #eee !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02) !important;
     transition: transform 0.3s ease;
 }
-.product-card, .card {
+
+.stat-card:hover {
+    transform: translateY(-4px);
+}
+
+.stat-card h6 {
+    color: #666;
+}
+
+.stat-card h2 {
+    color: #000;
+}
+
+.product-card {
     background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .product-card:hover {
-    transform: translateY(-8px); /* efek: sedikit 'melayang' pas kursor ngelewat */
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
-.form-control:focus {
+
+.card-img-top {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    padding: 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.product-card .card-body {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #000;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0d6efd;
+    margin-bottom: 8px;
+}
+
+.product-info {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Container tombol pertama (Detail, Edit, Hapus) */
+.d-flex.gap-2.mb-2 {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0;
+}
+
+/* Container tombol kedua (Beli, Wishlist) */
+.d-flex.gap-2.mt-2 {
+    display: flex;
+    gap: 6px;
+    margin-top: auto;
+}
+
+/* Tombol Detail */
+.btn-outline-primary {
+    background: #f0f0f0 !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    border-radius: 6px !important;
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    flex: 1;
+}
+
+.btn-outline-primary:hover {
+    background: #e0e0e0 !important;
+}
+
+/* Tombol Edit */
+.btn-outline-secondary {
+    background: #f0f0f0 !important;
+    border: 1px solid #ddd !important;
+    color: #333 !important;
+    border-radius: 6px !important;
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+}
+
+.btn-outline-secondary:hover {
+    background: #e0e0e0 !important;
+}
+
+/* Tombol Hapus */
+.btn-danger {
+    background: #fee !important;
+    border: 1px solid #fcc !important;
+    color: #dc3545 !important;
+    border-radius: 6px !important;
+    padding: 6px 8px !important;
+    font-size: 0.8rem !important;
+}
+
+.btn-danger:hover {
+    background: #fdd !important;
+}
+
+/* Tombol Beli */
+.btn-success {
+    background: #198754 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    color: white !important;
+    flex: 2;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #157347 !important;
+}
+
+.btn-success:disabled {
+    opacity: 0.5;
+}
+
+/* Tombol Wishlist */
+.btn-outline-danger {
+    border: 1px solid #ffcdd6 !important;
+    background: white !important;
+    border-radius: 6px !important;
+    padding: 8px !important;
+    color: #dc3545 !important;
+    flex: 1;
+}
+
+.btn-outline-danger:hover {
+    background: #fee !important;
+}
+
+/* SHOW MORE BUTTON */
+.show-more-container {
+    text-align: center;
+    margin: 30px 0 20px;
+}
+
+.btn-show-more {
+    background: white;
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+    padding: 10px 40px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-show-more:hover {
+    background: #0d6efd;
+    color: white;
+}
+
+.form-control, .form-select, textarea {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    background: white;
+}
+
+.form-control:focus, .form-select:focus {
     box-shadow: none;
     border-color: #0d6efd;
 }
-section {
-    scroll-margin-top: 80px;
+
+#category-manager-list > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 }
 
-/* warna teks di dalam field: abu terang biar enak dilihat */
-.form-control,
-.form-select,
-textarea {
-    color: #6c757d; 
+#category-manager-list > div:last-child {
+    border-bottom: none;
 }
 
-/* placeholder: sedikit lebih terang supaya beda dari isi */
-.form-control::placeholder,
-textarea::placeholder {
-    color: #adb5bd;
-    opacity: 1;
+.modal-content {
+    border-radius: 12px;
+    border: none;
 }
 
-.form-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+/* DARK MODE */
+body.dark-mode {
+    background-color: #121212;
+    color: #e4e4e4;
+}
+
+body.dark-mode .navbar {
+    background: #1e1e1e !important;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+body.dark-mode .navbar-brand {
+    color: white !important;
+}
+
+body.dark-mode .nav-link {
+    color: #ccc !important;
+}
+
+body.dark-mode .nav-link:hover {
+    color: #4dabf7 !important;
+}
+
+body.dark-mode #wishlist-nav-btn,
+body.dark-mode #dark-mode-toggle {
+    color: #ccc !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .hero-section {
+    background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('../assets/backroud_bar.jpg');
+}
+
+body.dark-mode .btn-add-new {
+    background: #333;
+    color: white;
+    border: 1px solid #444;
+}
+
+body.dark-mode .btn-add-new:hover {
+    background: #444;
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .product-card {
+    background-color: #1e1e1e !important;
+    border-color: #333 !important;
+}
+
+body.dark-mode .stat-card h6,
+body.dark-mode .product-info,
+body.dark-mode .section-desc {
+    color: #aaa !important;
+}
+
+body.dark-mode .stat-card h2,
+body.dark-mode .product-card h5,
+body.dark-mode .section-title h3 {
+    color: white !important;
+}
+
+body.dark-mode .section-title i {
+    color: #4dabf7 !important;
+}
+
+body.dark-mode .product-price {
+    color: #4dabf7 !important;
+}
+
+body.dark-mode .card-img-top {
+    background-color: #1e1e1e;
+    border-bottom-color: #333;
+}
+
+body.dark-mode .btn-outline-primary,
+body.dark-mode .btn-outline-secondary {
+    background: #2a2a2a !important;
+    border-color: #444 !important;
+    color: #ccc !important;
+}
+
+body.dark-mode .btn-outline-primary:hover,
+body.dark-mode .btn-outline-secondary:hover {
+    background: #333 !important;
+}
+
+body.dark-mode .btn-danger {
+    background: #442222 !important;
+    border-color: #663333 !important;
+    color: #ff8a8a !important;
+}
+
+body.dark-mode .btn-outline-danger {
+    background: #2a2a2a !important;
+    border-color: #663333 !important;
+    color: #ff8a8a !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #2a2a2a;
+    border-color: #444;
+    color: #e4e4e4;
+}
+
+body.dark-mode .btn-show-more {
+    background: #1e1e1e;
+    border-color: #4dabf7;
+    color: #4dabf7;
+}
+
+body.dark-mode .btn-show-more:hover {
+    background: #4dabf7;
+    color: white;
+}
+
+body.dark-mode footer {
+    background: #1e1e1e !important;
+    border-top: 1px solid #333 !important;
+}
+
+@media (max-width: 992px) {
+    .row.g-4#product-list > [class*="col-"] {
+        flex: 0 0 auto;
+        width: 50%;
+    }
+}
+
+@media (max-width: 768px) {
+    .row.g-4#product-list > [class*="col-"] {
+        width: 100%;
+    }
+    
+    .hero-section {
+        padding: 60px 0 !important;
+    }
+    
+    .hero-section h1 {
+        font-size: 2rem;
+    }
 }
