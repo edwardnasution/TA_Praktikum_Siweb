@@ -21,6 +21,15 @@
 
     /* Ambil data kategori dari localStorage */
     function getCategories() {
+        // Jika server menyediakan categories, gunakan itu (read-only)
+        if (window.SERVER_CATEGORIES && Array.isArray(window.SERVER_CATEGORIES)) {
+            // SERVER_CATEGORIES may be an array of names or objects
+            return window.SERVER_CATEGORIES.map(function(item) {
+                if (item && typeof item === 'object') return item.name || item.nama_category || item.nama || '';
+                return item;
+            }).filter(Boolean);
+        }
+
         const c = localStorage.getItem('categories');
         return c ? JSON.parse(c) : [];
     }
@@ -32,6 +41,11 @@
 
     /* Pastikan kategori default ada */
     function ensureDefaultCategories() {
+        // Do not overwrite server-provided categories
+        if (window.SERVER_CATEGORIES && Array.isArray(window.SERVER_CATEGORIES) && window.SERVER_CATEGORIES.length > 0) {
+            return;
+        }
+
         const cats = getCategories();
         if (!cats || cats.length === 0) {
             saveCategories(DEFAULT_CATEGORIES.slice());
