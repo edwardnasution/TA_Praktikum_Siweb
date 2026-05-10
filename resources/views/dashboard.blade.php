@@ -8,9 +8,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 </head>
 
@@ -19,7 +17,7 @@
         <div class="container">
             <a class="navbar-brand fw-bold" href="#"><i class="bi bi-intersect me-2"></i>THREADSTOCK</a>
 
-            <form action="{{ url('/logout') }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin keluar dari halaman ini?');">
+            <form action="{{ url('/logout') }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Apakah Anda yakin ingin keluar?');">
                 @csrf
                 <button type="submit" class="nav-link text-danger border-0 bg-transparent fw-bold">
                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -29,15 +27,7 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="#">Inventory</a>
                 <a class="nav-link" href="#form-input">Add Stock</a>
-                <button id="dark-mode-toggle" class="btn btn-outline-light btn-sm ms-2" title="Toggle Dark Mode">
-                    <i class="bi bi-moon"></i>
-                </button>
-                <button id="wishlist-nav-btn" class="btn btn-outline-danger btn-sm ms-2 position-relative" title="Lihat Wishlist">
-                    <i class="bi bi-heart"></i>
-                    <span id="wishlist-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none">
-                        0
-                    </span>
-                </button>
+                <button id="dark-mode-toggle" class="btn btn-outline-light btn-sm ms-2"><i class="bi bi-moon"></i></button>
             </div>
         </div>
     </nav>
@@ -46,9 +36,7 @@
         <div class="hero-overlay">
             <div class="container py-5">
                 <h1 class="display-5 fw-bold text-white">THREADSTOCK</h1>
-                <p class="lead text-light">
-                    Manage and shop the trendiest clothing items.
-                </p>
+                <p class="lead text-light">Manage and shop the trendiest clothing items.</p>
                 <a href="#form-input" class="btn-add-new">+ Tambah Produk Baru</a>
             </div>
         </div>
@@ -62,7 +50,7 @@
                         <i class="bi bi-box-seam fs-1 text-primary"></i>
                         <div>
                             <h6 class="opacity-75 mb-0">Total Produk</h6>
-                            <h2 id="stat-total-produk" class="fw-bold">0 Pcs</h2>
+                            <h2 class="fw-bold">{{ $products->sum('stok') }} Pcs</h2>
                         </div>
                     </div>
                 </div>
@@ -73,7 +61,7 @@
                         <i class="bi bi-hat fs-1 text-success"></i>
                         <div>
                             <h6 class="opacity-75 mb-0">Total Model</h6>
-                            <h2 id="stat-total-model" class="fw-bold">0 Model</h2>
+                            <h2 class="fw-bold">{{ $products->count() }} Model</h2>
                         </div>
                     </div>
                 </div>
@@ -84,7 +72,7 @@
                         <i class="bi bi-tags fs-1 text-warning"></i>
                         <div>
                             <h6 class="opacity-75 mb-0">Kategori</h6>
-                            <h2 class="fw-bold">3 Jenis</h2>
+                            <h2 class="fw-bold">{{ $categories->count() }} Jenis</h2>
                         </div>
                     </div>
                 </div>
@@ -93,74 +81,107 @@
     </section>
 
     <section class="container mb-5">
-        <h3 class="fw-bold mb-4 border-start border-4 border-primary ps-3">
-            Daftar Katalog Kaos
-        </h3>
-
-        <div class="row g-4" id="product-list"></div>
-
-        <div class="show-more-container text-center mt-4">
-            <button id="btn-show-more" class="btn-show-more">Show More</button>
+        <h3 class="fw-bold mb-4 border-start border-4 border-primary ps-3">Daftar Katalog Kaos</h3>
+        <div class="row g-4" id="product-list">
+            @forelse($products as $p)
+            <div class="col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <img src="{{ asset('assets/' . $p->foto) }}" class="card-img-top" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <span class="badge bg-primary">{{ $p->category->nama_category }}</span>
+                            <span class="badge bg-secondary">{{ $p->brand->nama_brand ?? 'No Brand' }}</span>
+                        </div>
+                        <h5 class="fw-bold text-dark">{{ $p->nama_product }}</h5>
+                        <p class="text-primary fw-bold mb-1">Rp {{ number_format($p->harga, 0, ',', '.') }}</p>
+                        <p class="small text-muted">Stok: {{ $p->stok }} | {{ $p->ukuran }}</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-outline-dark w-100">Detail</button>
+                            <form action="{{ route('product.destroy', $p->id) }}" method="POST">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Hapus produk ini?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @empty
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Belum ada produk di database.</p>
+            </div>
+            @endforelse
         </div>
     </section>
 
     <section id="form-input" class="container mb-5 py-5">
         <div class="section-title">
             <i class="bi bi-plus-circle"></i>
-            <h3>Add New Product</h3>
+            <h3>Management Center</h3>
         </div>
-        <p class="section-desc">
-            Manage and browse the available clothing stock below.
-        </p>
+
         <div class="row">
             <div class="col-lg-8 mb-4">
-                <div class="card border-0 shadow p-4 p-md-5">
-                    <h3 class="fw-bold mb-4 text-center">Registrasi Produk Baru</h3>
-                    <form id="product-form">
+                <div class="card border-0 shadow p-4">
+                    <h4 class="fw-bold mb-4">Registrasi Produk Baru</h4>
+
+                    @if(session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @endif
+
+                    <form action="{{ route('product.store') }}" method="POST">
+                        @csrf
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Nama Model</label>
-                                <input type="text" id="input-nama" class="form-control" placeholder="e.g. Noir Oversize" required />
+                                <input type="text" name="nama_product" class="form-control" placeholder="e.g. Noir Oversize" required />
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <label class="form-label fw-semibold">Kategori</label>
-                                <select id="input-kategori" class="form-select">
-                                    <option>T-Shirt</option>
-                                    <option>Longsleeve</option>
-                                    <option>Hoodie</option>
+                                <select name="category_id" class="form-select" required>
+                                    @foreach($categories as $cat)
+                                    <option value="{{ $cat->id }}">{{ $cat->nama_category }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-semibold">Brand</label>
+                                <select name="brand_id" class="form-select" required>
+                                    @foreach($brands as $brand)
+                                    <option value="{{ $brand->brand_id }}">{{ $brand->nama_brand }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Harga (IDR)</label>
-                                <input type="number" id="input-harga" class="form-control" placeholder="150000" required />
+                                <input type="number" name="harga" class="form-control" required />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Jumlah Stok</label>
-                                <input type="number" id="input-stok" class="form-control" placeholder="0" required />
+                                <input type="number" name="stok" class="form-control" required />
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Nama File Foto (mis. .jpg/.png)</label>
-                                <input type="text" id="input-foto" class="form-control" placeholder="Contoh: kaos-hitam.jpg" required />
-                                <div class="form-text text-danger">
-                                    *Pastikan file foto sudah diletakkan di folder public/assets/
-                                </div>
+                                <label class="form-label fw-semibold">Nama File Foto</label>
+                                <input type="text" name="foto" class="form-control" placeholder="kaos-hitam.jpg" required />
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-semibold">Deskripsi singkat</label>
-                                <textarea id="input-deskripsi" class="form-control" rows="3" placeholder="Tulis deskripsi singkat produk (bahan, fit, catatan)"></textarea>
+                                <label class="form-label fw-semibold">Deskripsi</label>
+                                <textarea name="deskripsi" class="form-control" rows="2"></textarea>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Ukuran / Size</label>
-                                <input type="text" id="input-ukuran" class="form-control" placeholder="Contoh: S,M,L,XL" />
+                                <label class="form-label fw-semibold">Ukuran</label>
+                                <input type="text" name="ukuran" class="form-control" placeholder="S,M,L,XL" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold">Material</label>
-                                <input type="text" id="input-material" class="form-control" placeholder="Contoh: Katun 100%" />
+                                <input type="text" name="material" class="form-control" placeholder="Cotton Combed 30s" />
                             </div>
                             <div class="col-12 mt-4">
-                                <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">
-                                    SIMPAN DATA
-                                </button>
+                                <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">SIMPAN PRODUK KE DATABASE</button>
                             </div>
                         </div>
                     </form>
@@ -168,141 +189,31 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card mb-4 p-3">
-                    <div class="d-flex flex-column gap-3 align-items-start">
-                        <div class="w-100">
-                            <label class="form-label fw-semibold">Tambah Kategori</label>
-                            <div class="d-flex gap-2">
-                                <input id="new-category-name" type="text" class="form-control" placeholder="Contoh: T-Shirt" />
-                                <button id="add-category-btn" class="btn btn-primary">
-                                    Tambah
-                                </button>
-                            </div>
-                        </div>
-                        <div class="text-muted small">
-                            Kategori disimpan di browser (localStorage).
-                        </div>
-                    </div>
+                <div class="card p-3 mb-4 shadow-sm border-0">
+                    <label class="form-label fw-bold">Tambah Kategori Baru</label>
+                    <form action="{{ route('category.store') }}" method="POST" class="d-flex gap-2">
+                        @csrf
+                        <input name="nama_category" type="text" class="form-control" placeholder="Nama Kategori" required />
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i></button>
+                    </form>
+                </div>
 
-                    <div id="category-manager-list" class="mt-3"></div>
+                <div class="card p-3 shadow-sm border-0">
+                    <label class="form-label fw-bold">Tambah Brand Baru</label>
+                    <form action="{{ route('brand.store') }}" method="POST" class="d-flex gap-2">
+                        @csrf
+                        <input name="nama_brand" type="text" class="form-control" placeholder="Nama Brand" required />
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-plus"></i></button>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="bg-dark text-white text-center py-4">
-        <p class="mb-0 small text-secondary">
-            © 2026 THREADSTOCK SYSTEM | Built for Siweb Final Project
-        </p>
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <p class="mb-0 small">© 2026 THREADSTOCK SYSTEM | Built for Siweb Final Project</p>
     </footer>
 
-    <div class="modal fade" id="wishlistModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-heart-fill text-danger me-2"></i>Daftar Wishlist
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="wishlist-items">
-                        <p class="text-muted text-center py-4">Wishlist kosong</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Tutup
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="productDetailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="productDetailTitle">Detail Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="modal-view">
-                        <div class="card border-0">
-                            <div class="row g-0">
-                                <div class="col-md-5 text-center">
-                                    <img id="modal-image" src="" alt="foto" class="card-img-top p-3" style="max-height: 360px; object-fit: contain" onerror="this.src = 'https://via.placeholder.com/400x400?text=Foto+Tidak+Ada'" />
-                                </div>
-                                <div class="col-md-7">
-                                    <div class="card-body">
-                                        <h5 id="view-nama" class="fw-bold"></h5>
-                                        <p id="view-harga" class="text-primary fw-bold mb-2"></p>
-                                        <p id="view-kategori" class="text-muted small mb-2"></p>
-                                        <p id="view-stok" class="text-muted small mb-2"></p>
-                                        <p id="view-deskripsi" class="mb-2 text-secondary"></p>
-                                        <p id="view-ukuran" class="mb-1 small text-secondary"></p>
-                                        <p id="view-material" class="mb-1 small text-secondary"></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form id="modal-product-form" class="d-none">
-                        <div class="row g-3">
-                            <div class="col-md-5 text-center">
-                                <img id="modal-image-edit" src="" alt="foto" class="img-fluid mb-3" onerror="this.src = 'https://via.placeholder.com/400x400?text=Foto+Tidak+Ada'" />
-                                <label class="form-label">Nama file foto</label>
-                                <input id="modal-foto" class="form-control" placeholder="kaos-hitam.jpg" />
-                            </div>
-                            <div class="col-md-7">
-                                <label class="form-label">Nama model</label>
-                                <input id="modal-nama" class="form-control" />
-
-                                <label class="form-label mt-2">Kategori</label>
-                                <select id="modal-kategori" class="form-select"></select>
-
-                                <div class="row g-2 mt-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Harga (IDR)</label>
-                                        <input id="modal-harga" type="number" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Stok</label>
-                                        <input id="modal-stok" type="number" class="form-control" />
-                                    </div>
-                                </div>
-
-                                <label class="form-label mt-2">Deskripsi</label>
-                                <textarea id="modal-deskripsi" class="form-control" rows="3"></textarea>
-
-                                <div class="row g-2 mt-2">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Ukuran</label>
-                                        <input id="modal-ukuran" class="form-control" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Material</label>
-                                        <input id="modal-material" class="form-control" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Tutup
-                    </button>
-                    <button type="button" id="modal-save-btn" class="btn btn-primary d-none">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="{{ asset('js/script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
