@@ -1,62 +1,68 @@
-<!DOCTYPE html>
-<html lang="id">
+<x-guest-layout>
+    <!-- Session Status -->
+    <x-auth-session-status class="mb-4" :status="session('status')" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Sistem Manajemen</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <form method="POST" action="{{ route('login') }}">
+        @csrf
 
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-</head>
-
-<body>
-
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-profile-icon">
-                <i class="fas fa-user"></i>
-            </div>
-
-            <h3 class="text-center mb-4" style="color: #fff;"><b>Masuk</b></h3>
-
-            @if(session('error'))
-            <div class="alert alert-danger text-center" role="alert">
-                {{ session('error') }}
-            </div>
-            @endif
-
-            <form action="{{ url('/login') }}" method="POST">
-                @csrf
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text-login">
-                        <i class="fas fa-user"></i>
-                    </span>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Username" required autocomplete="off" value="{{ $saved_username ?? '' }}">
-                </div>
-
-                <div class="input-group mb-3">
-                    <span class="input-group-text-login">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                </div>
-
-                <div class="login-links-row">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input-custom" id="remember" name="remember" {{ !empty($saved_username) ? 'checked' : '' }}>
-                        <label class="form-check-label" for="remember" style="color: #fff;">Ingat saya</label>
-                    </div>
-                    <a href="#" class="login-link">Lupa password?</a>
-                </div>
-
-                <button type="submit" class="btn btn-primary-login w-100 mt-3">LOGIN</button>
-            </form>
+        <!-- Email Address -->
+        <div>
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
-    </div>
 
-</body>
+        <!-- Password -->
+        <div class="mt-4">
+            <x-input-label for="password" :value="__('Password')" />
 
-</html>
+            <x-text-input id="password" class="block mt-1 w-full"
+                type="password"
+                name="password"
+                required autocomplete="current-password" />
+
+            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        </div>
+
+        <!-- Remember Me -->
+        <div class="block mt-4">
+            <label for="remember_me" class="inline-flex items-center">
+                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
+                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+            </label>
+        </div>
+
+        <div class="flex items-center justify-between mt-4">
+            <a href="{{ route('home') }}"
+                class="text-sm text-gray-300 hover:text-white no-underline">
+                &larr; Kembali
+            </a>
+
+            <div class="flex items-center">
+                @if (Route::has('password.request'))
+                <a class="text-sm text-gray-300 hover:text-white me-3"
+                    href="{{ route('password.request') }}">
+                    {{ __('Forgot your password?') }}
+                </a>
+                @endif
+
+                <x-primary-button>
+                    {{ __('Log in') }}
+                </x-primary-button>
+            </div>
+        </div>
+
+        <div class="flex items-center my-6">
+            <div class="flex-grow border-t border-white/10"></div>
+            <span class="px-4 text-sm text-gray-300">atau masuk dengan</span>
+            <div class="flex-grow border-t border-white/10"></div>
+        </div>
+
+        <div>
+            <a href="{{ route('google.redirect') }}"
+                class="w-full inline-flex justify-center items-center px-4 py-2 bg-white border border-white/10 rounded-md font-semibold text-xs text-gray-900 uppercase tracking-normal shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-[#111114] transition ease-in-out duration-150 no-underline">
+                Login dengan Google
+            </a>
+        </div>
+    </form>
+</x-guest-layout>
