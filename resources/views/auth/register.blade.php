@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" class="relative z-50 pointer-events-auto">
         @csrf
 
         <!-- Name -->
