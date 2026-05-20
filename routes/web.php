@@ -1,49 +1,30 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\ProductController;
-use App\Models\Category;
-use App\Models\Brand;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
-/*
-Di sinilah kita mendaftarkan semua URL untuk aplikasi kita.
-*/
-
-// Route untuk Halaman Dashboard (Hanya bisa diakses kalau ada session login)
 Route::get('/', function () {
-    // Pengecekan session mirip seperti di PHP Native kemarin
-    if (!session('login')) {
-        return redirect('/login');
-    }
+    return view('index');
+})->name('home');
 
-    // Ambil categories dan brands untuk form di dashboard
-    $categories = Category::all();
-    $brands = Brand::all();
+Route::get('/dashboard', function () {
+    return redirect()->route('home');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    // Ambil products untuk ditampilkan di dashboard
-    $products = \App\Models\Product::all();
+Route::middleware('auth')->group(function () {
 
-    return view('dashboard', compact('categories', 'brands', 'products'));
-})->name('dashboard');
+    Route::get('/products', [ProductController::class, 'index'])->name('products');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-// Route untuk menampilkan form Login
-Route::get('/login', [AuthController::class, 'loginView'])->name('login');
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 
-// Route untuk memproses data dari form Login (saat tombol ditekan)
-Route::post('/login', [AuthController::class, 'loginAction']);
-
-// Route untuk proses Logout
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-Route::get('/product', [ProductController::class, 'index']);
-
-// Brands API (used by frontend)
-Route::get('/brands', [BrandController::class, 'index']);
-Route::post('/brands', [BrandController::class, 'store']);
-
-// Named routes used by blade forms
-Route::post('/brand', [BrandController::class, 'store'])->name('brand.store');
-Route::post('/category', [CategoryController::class, 'store'])->name('category.store');
+require __DIR__ . '/auth.php';

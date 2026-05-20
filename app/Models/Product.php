@@ -3,30 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Category;
-use App\Models\Brand;
 
-class Product extends Model
+class product extends Model
 {
+    protected $table = 'products';
+    protected $primaryKey = 'product_id';
     protected $fillable = [
-        'nama_product',
+        'product_id',
         'category_id',
-        'brand_id',
-        'harga',
-        'stok',
-        'foto',
-        'ukuran',
-        'material',
-        'deskripsi'
+        'product_name',
+        'product_price',
+        'product_stock',
+        'product_image',
     ];
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class, 'category_id');
-    }
-
-    public function brand()
-    {
-        return $this->belongsTo(Brand::class, 'brand_id');
+    public function category(){
+        return $this->belongsTo(Category::class, 'category_id', 'category_id');
     }
 }

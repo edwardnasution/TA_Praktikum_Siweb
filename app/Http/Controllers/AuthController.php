@@ -3,41 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 
 class AuthController extends Controller
 {
-    public function loginView(Request $request)
+    public function showLogin()
     {
-        if (session('login')) {
-            return redirect('/');
-        }
-        $saved_username = $request->cookie('remember_username');
-        return view('auth.login', ['saved_username' => $saved_username]);
+        // Cek jika sudah login, lempar ke index
+        if (session()->has('user')) return redirect()->route('home');
+        return view('login');
     }
-    public function loginAction(Request $request)
+
+    public function login(Request $request)
     {
-        $username = $request->input('username');
-        $password = $request->input('password');
+        $valid_user = "admin";
+        $valid_pass = "123";
 
-        $remember = $request->has('remember');
-        if ($username === 'admin' && $password === 'admin123') {
-
-            session(['login' => true, 'username' => $username]);
-
-            if ($remember) {
-                Cookie::queue('remember_username', $username, 10080);
-            } else {
-                Cookie::queue(Cookie::forget('remember_username'));
-            }
-            return redirect('/');
+        if ($request->username == $valid_user && $request->password == $valid_pass) {
+            // Set Session Laravel
+            session(['user' => $request->username]);
+            return redirect()->route('home');
         }
+
+        // Jika gagal, kembalikan ke login dengan pesan error
         return back()->with('error', 'Username atau Password salah!');
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        $request->session()->flush();
-        return redirect('/login');
+        session()->forget('user'); // Hapus session
+        return redirect()->route('login');
     }
 }
